@@ -1,0 +1,2 @@
+- add some `glGet*` info methods for specific objects (programs, textures,
+  vertex attributes, etc.)

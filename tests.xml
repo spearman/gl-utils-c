@@ -1,0 +1,15 @@
+<version>
+  0.1.0
+</version>
+
+<headers>
+  ./
+</headers>
+
+<libs>
+  ./
+</libs>
+
+<gcc_options>
+  -lGL -lGLEW -lX11
+</gcc_options>

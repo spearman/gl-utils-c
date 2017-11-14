@@ -1,0 +1,7 @@
+obj/
+build/
+logs/
+test_results/
+tests/
+afl/out/
+callgrind.out.*
