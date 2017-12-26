@@ -13,7 +13,7 @@ void gl_info_shader_program_constant_write (FILE* file) {
     GLboolean glbool[4];
     glGetBooleanv (GL_SHADER_COMPILER, glbool);
     fprintf (file, "GL_SHADER_COMPILER:                       %s\n",
-    gl_show_boolean (*glbool));
+      gl_show_boolean (*glbool));
     glGetIntegerv (GL_NUM_PROGRAM_BINARY_FORMATS, glint);
     fprintf (file, "GL_NUM_PROGRAM_BINARY_FORMATS:            %i\n", *glint);
     GLint program_binary_fmts[*glint];
