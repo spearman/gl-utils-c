@@ -1,17 +1,25 @@
 #include "gl-utils.h"
 
 bool gl_check_context() {
-  const GLubyte* version = NULL;
-  version = glGetString (GL_VERSION);
-  if (version == NULL) {
-    printf ("OpenGL context not initialized\n");
+  if (glGetString == NULL) {
+    printf ("OpenGL functions not loaded\n");
     assert (0);
     return false;
   } else {
-    return true;
+    const GLubyte* version = NULL;
+    version = glGetString (GL_VERSION);
+    if (version == NULL) {
+      printf ("OpenGL context not initialized\n");
+      assert (0);
+      return false;
+    } else {
+      return true;
+    }
   }
 }
 
+/// The environment variable `GL_UTILS_FATAL_ERRORS` may be defined to cause
+/// this function to raise a fatal assertion when an error is encountered.
 void gl_check_error() {
   if (gl_check_context()) {
     GLenum error   = glGetError();
@@ -21,7 +29,9 @@ void gl_check_error() {
       error = glGetError();
       was_error = true;
     }
-    assert (!was_error);
+    if (getenv ("GL_UTILS_FATAL_ERRORS")) {
+      assert (!was_error);
+    }
   }
 }
 

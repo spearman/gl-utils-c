@@ -2,6 +2,14 @@
 
 /*!
 @mainpage
+@section environment_variables Environment variables
+
+The following environment variables can be set:
+
+- `GL_UTILS_FATAL_ERRORS` -- if set, raise an assertion when an error is
+  encountered by `gl_check_error()`.
+- `GL_UTILS_REQUEST_3_3_CORE` -- request an OpenGL 3.3 core profile
+
 @section gl_overview OpenGL overview
 
 - OpenGL Context
@@ -124,14 +132,12 @@ Some parts of the pipeline are involved in other *rendering commands*:
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <assert.h>
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <glad/glad.h>
 
 /* gl-utils/info.c */
-void glew_info_print                              ();
-void glew_info_write                              (FILE* file);
 void gl_info_constant_print                       ();
 void gl_info_constant_write                       (FILE* file);
 void gl_info_state_print                          ();

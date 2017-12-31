@@ -12,32 +12,64 @@ void gl_info_context_constant_write (FILE* file) {
     //GLboolean glbool  [4];
     GLint     glint   [4];
     GLint64   glint64 [4];
+
     fprintf (file, "GL_VERSION:                         %s\n",
       glGetString (GL_VERSION));
+    gl_check_error();
+
     fprintf (file, "GL_VENDOR:                          %s\n",
       glGetString (GL_VENDOR));
+    gl_check_error();
+
     fprintf (file, "GL_RENDERER:                        %s\n",
       glGetString (GL_RENDERER));
+    gl_check_error();
+
     fprintf (file, "GL_SHADING_LANGUAGE_VERSION:        %s\n",
       glGetString (GL_SHADING_LANGUAGE_VERSION));
-    glGetIntegerv (GL_MAJOR_VERSION, glint);
-    fprintf (file, "GL_MAJOR_VERSION:                   %i\n", *glint);
-    glGetIntegerv (GL_MINOR_VERSION, glint);
-    fprintf (file, "GL_MINOR_VERSION:                   %i\n", *glint);
-    glGetIntegerv (GL_NUM_SHADING_LANGUAGE_VERSIONS, glint);
-    fprintf (file, "GL_NUM_SHADING_LANGUAGE_VERSIONS:   %i\n", *glint);
+    gl_check_error();
+
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    fprintf (file, "GL_MAJOR_VERSION:                   %i\n", gl_major_version);
+    gl_check_error();
+
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+    fprintf (file, "GL_MINOR_VERSION:                   %i\n", gl_minor_version);
+    gl_check_error();
+
+    // gl 4.3
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 3 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_NUM_SHADING_LANGUAGE_VERSIONS, glint);
+      fprintf (file, "GL_NUM_SHADING_LANGUAGE_VERSIONS:   %i\n", *glint);
+      gl_check_error();
+    }
+
     glGetIntegerv (GL_NUM_EXTENSIONS, glint);
     fprintf (file, "GL_NUM_EXTENSIONS:                  %i\n", *glint);
+    gl_check_error();
+
     glGetIntegerv (GL_NUM_COMPRESSED_TEXTURE_FORMATS, glint);
     fprintf (file, "GL_NUM_COMPRESSED_TEXTURE_FORMATS:  %i\n", *glint);
+    gl_check_error();
+
     glGetIntegerv (GL_CONTEXT_PROFILE_MASK, glint);
     fprintf (file, "GL_CONTEXT_PROFILE_MASK:            %x\n", *glint);
+    gl_check_error();
+
     glGetIntegerv (GL_CONTEXT_FLAGS, glint);
     fprintf (file, "GL_CONTEXT_FLAGS:                   %x\n", *glint);
+    gl_check_error();
+
     glGetIntegerv (GL_MIN_MAP_BUFFER_ALIGNMENT, glint);
     fprintf (file, "GL_MIN_MAP_BUFFER_ALIGNMENT:        %i\n", *glint);
+    gl_check_error();
+
     glGetInteger64v (GL_TIMESTAMP, glint64);
     fprintf (file, "GL_TIMESTAMP:                       %li\n", *glint64);
+    gl_check_error();
   }
   fprintf (file, "...gl info context constants\n");
 }

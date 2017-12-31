@@ -20,10 +20,10 @@ OBJECTS_DEBUG_SHARED = $(SOURCES_LIB:src/%.c=obj/debug/shared/%.o)
 OBJECTS_TEST = $(SOURCES_TEST:src/%.c=obj/test/%.o)
 OBJECTS_FUZZ = $(SOURCES_FUZZ:src/%.c=obj/fuzz/%.o)
 CC = gcc
-CPPFLAGS =
-CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Wfatal-errors
+CPPFLAGS = -I./include/
+CFLAGS = -std=c11 -Wall -Wextra -Wfatal-errors #-Wpedantic
 LDFLAGS =
-LDLIBS = -lm -lGL -lGLEW -lSDL2 #-lX11
+LDLIBS = -lm -ldl -lGL -lSDL2 #-lGLEW -lX11
 ARFLAGS = rc
 RELEASE_FLAGS = -O3 -DNDEBUG
 DEBUG_FLAGS = -g -ggdb -DDEBUG
@@ -52,7 +52,7 @@ build/doc/html/: Doxyfile $(HEADERS) $(SOURCES) | build/doc/
 
 run: build/debug/$(EXE)
 	@echo ">>> Running debug build..."
-	./build/debug/$(EXE)
+	./build/debug/$(EXE) 2> dump
 	@echo "<<< ...Running debug build done"
 run-release: release
 	@echo ">>> Running release build..."
@@ -68,7 +68,7 @@ check: $(HEADERS) $(SOURCES)
 	cppcheck src/ --enable=all --suppress=missingIncludeSystem
 	@echo ">>> Run frama-c..."
 	frama-c -no-frama-c-stdlib -wp -wp-no-rte -wp-prover alt-ergo\
-    -cpp-extra-args="-DTEST" `find src/ -name *[^test][^main].c`
+    -cpp-extra-args="-DTEST" `find src/ -name *[^glad][^test][^main].c`
 	@echo "<<< ...Checking done"
 test: test_results/ build/test/$(TEST)
 	@echo ">>> Run unit and property tests in valgrind..."

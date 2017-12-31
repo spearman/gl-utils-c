@@ -11,5 +11,5 @@
 </libs>
 
 <gcc_options>
-  -lGL -lGLEW -lX11
+  -lGL -lX11
 </gcc_options>

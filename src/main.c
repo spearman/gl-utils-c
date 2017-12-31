@@ -7,7 +7,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "gl-utils.h" // includes `<GL/glew.h>`, `<GL/gl.h>`
+#include "gl-utils.h"
 
 const uint64_t CYCLE_FRAMES = 180;
 
@@ -76,6 +76,11 @@ void color_cycle_rgb (
 //  main                                                                     //
 ///////////////////////////////////////////////////////////////////////////////
 
+/// Environment variables that may be set:
+///
+/// - `GL_UTILS_REQUEST_3_3_CORE` -- if set, SDL will set GL attributes
+/// indicating / that an OpenGL 3.3 core profile should be requested (even
+/// if the system supports newer OpenGL versions).
 int main() {
   puts ("glutils main...");
 
@@ -89,6 +94,73 @@ int main() {
     sdl_check_error();
     exit (1);
   }
+
+  // set gl attributes before window creation
+  if (getenv ("GL_UTILS_REQUEST_4_5_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 5) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_4_4_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_4_3_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 3) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_4_2_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 2) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_4_1_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 1) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_4_0_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 0) < 0) {
+      sdl_check_error();
+    }
+  } else if (getenv ("GL_UTILS_REQUEST_3_3_CORE")) {
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 3) < 0) {
+      sdl_check_error();
+    }
+    if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 3) < 0) {
+      sdl_check_error();
+    }
+  }
+
+  if (SDL_GL_SetAttribute (
+    // core context profile makes deprecated functions unavailable
+    SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0)
+  {
+    sdl_check_error();
+  }
+
+  if (SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24) < 0) {
+    sdl_check_error();
+  } if (SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1) < 0) {
+    sdl_check_error();
+  }
+  puts ("...SDL GL attributes set...");
+
   // create new window as child of root window
   SDL_Window* window = SDL_CreateWindow (
     "my sdl window",
@@ -100,29 +172,8 @@ int main() {
     sdl_check_error();
     exit (1);
   }
-  // create sdl gl context
-  SDL_GLContext context = SDL_GL_CreateContext (window);
-  if (context == NULL) {
-    puts ("error: sdl create gl context failed");
-    sdl_check_error();
-    exit (1);
-  }
+  puts ("...SDL window created...");
 
-  // set gl attributes
-  if (SDL_GL_SetAttribute (
-    // core context profile makes deprecated functions unavailable
-    SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0)
-  {
-    sdl_check_error();
-  } if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
-    sdl_check_error();
-  } if (SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 5) < 0) {
-    sdl_check_error();
-  } if (SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24) < 0) {
-    sdl_check_error();
-  } if (SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1) < 0) {
-    sdl_check_error();
-  }
   // /!\ Warning: these swap interval settings override the
   // /!\ system vsync settings (nvidia-settings)
   #define IMMEDIATE_UPDATE 0
@@ -131,37 +182,46 @@ int main() {
   if (SDL_GL_SetSwapInterval (ON_VSYNC) < 0) {
     sdl_check_error();
   }
+  puts ("...SDL GL swap interval set...");
 
-  // glew init
-  const GLenum glew_init = glewInit();
-  if (glew_init != GLEW_OK) {
-    puts ("error: glew init failed");
-    printf ("glew error message: %s\n", glewGetErrorString (glew_init));
-    sdl_gl_cleanup (context, window);
+  // create sdl gl context
+  SDL_GLContext context = SDL_GL_CreateContext (window);
+  if (context == NULL) {
+    puts ("error: sdl create gl context failed");
+    sdl_check_error();
     exit (1);
   }
+  puts ("...SDL OpenGL Context created...");
+
+  // glad init
+  if (!gladLoadGL()) {
+    puts ("error: glad load gl failed");
+    exit (1);
+  }
+  gl_check_error();
+
   puts ("...initialize");
   // end initialize
 
-  gl_check_error();
-
   //
-  // print infos to stdout
+  // write infos
   //
   puts ("\
 *******************************************************************************");
-  glew_info_print();
+  gl_info_context_constant_print();
+  gl_check_error();
+  gl_info_context_state_print();
   gl_check_error();
   puts ("\
 *******************************************************************************");
-  //gl_info_context_constant_print();
-  //gl_info_context_state_print();
   //gl_info_context_glsl_versions_print();
   //gl_info_context_extensions_print();
   //gl_info_context_compressed_tex_fmts_print();
-  gl_check_error();
+  //gl_check_error();
+  /*
   puts ("\
 *******************************************************************************");
+  */
   //gl_info_shader_program_constant_print();
   //gl_info_shader_program_state_print();
   //gl_info_shader_program_buffers_print();
@@ -183,9 +243,11 @@ int main() {
   //gl_info_asynchronous_queries_state_print();
   //gl_info_debug_output_constant_print();
   //gl_info_debug_output_state_print();
-  gl_check_error();
+  //gl_check_error();
+  /*
   puts ("\
 *******************************************************************************");
+  */
   //gl_info_vertex_rendering_constant_print();
   //gl_info_vertex_rendering_state_print();
 
@@ -203,15 +265,22 @@ int main() {
   //gl_info_fragment_shader_state_print();
   //gl_info_persample_processing_constant_print();
   //gl_info_persample_processing_state_print();
+  //gl_check_error();
+  puts ("dumping gl constants to stderr...");
+  fprintf (stderr, "\
+*******************************************************************************\
+\n");
+  gl_info_constant_write (stderr);
   gl_check_error();
-  puts ("\
-*******************************************************************************");
-  gl_info_constant_print();
-  puts ("\
-*******************************************************************************");
-  gl_info_state_print();
-  puts ("\
-*******************************************************************************");
+  puts ("dumping gl state to stderr...");
+  fprintf (stderr, "\
+*******************************************************************************\
+\n");
+  gl_info_state_write (stderr);
+  gl_check_error();
+  fprintf (stderr, "\
+*******************************************************************************\
+\n");
   //assert(0);
 
   //

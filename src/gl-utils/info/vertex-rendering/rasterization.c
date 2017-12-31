@@ -92,9 +92,12 @@ void gl_info_rasterization_state_write (FILE* file) {
       gl_show_point_sprite_origin (*glint));
     glGetIntegerv (GL_LINE_WIDTH, glint);
     fprintf (file, "GL_LINE_WIDTH:                              %i\n", *glint);
+    // FIXME: glGet(GL_POLYGON_MODE, *) deprecated ?
+    /*
     glGetIntegerv (GL_POLYGON_MODE, glint);
     fprintf (file, "GL_POLYGON_MODE:                            %s %s\n",
       gl_show_polygon_mode (glint[0]), gl_show_polygon_mode (glint[1]));
+    */
     *glbool = glIsEnabled (GL_LINE_SMOOTH);
     fprintf (file, "glIsEnabled (GL_LINE_SMOOTH):               %s\n",
       gl_show_boolean (*glbool));

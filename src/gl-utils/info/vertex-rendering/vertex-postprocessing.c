@@ -58,6 +58,11 @@ void gl_info_vertex_postprocessing_state_print() {
 void gl_info_vertex_postprocessing_state_write (FILE* file) {
   fprintf (file, "gl info vertex postprocessing state...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint     glint  [4];
     GLint64   glint64[4];
     GLboolean glbool [4];
@@ -73,19 +78,33 @@ void gl_info_vertex_postprocessing_state_write (FILE* file) {
     glGetBooleanv (GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED, glbool);
     fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED:      %s\n",
       gl_show_boolean (*glbool));
-    GLint max_transform_feedback_buffer_bindings;
-    glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_BUFFERS,
-      &max_transform_feedback_buffer_bindings);
-    for (GLint i = 0; i < max_transform_feedback_buffer_bindings; ++i) {
-      glGetIntegeri_v (GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, i, glint);
+
+    // gl 4.0
+    if (4 <= gl_major_version) {
+      GLint max_transform_feedback_buffer_bindings;
+      glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_BUFFERS,
+        &max_transform_feedback_buffer_bindings);
+      for (GLint i = 0; i < max_transform_feedback_buffer_bindings; ++i) {
+        glGetIntegeri_v (GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, i, glint);
+        fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_BINDING[%2i]: %i\n",
+          i, *glint);
+        glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_START, i, glint64);
+        fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_START  [%2i]: %li\n",
+          i, *glint64);
+        glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_SIZE, i, glint64);
+        fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_SIZE   [%2i]: %li\n",
+          i, *glint64);
+      }
+    } else {
+      glGetIntegeri_v (GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, 0, glint);
       fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_BINDING[%2i]: %i\n",
-        i, *glint);
-      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_START, i, glint64);
+        0, *glint);
+      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_START, 0, glint64);
       fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_START  [%2i]: %li\n",
-        i, *glint64);
-      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_SIZE, i, glint64);
+        0, *glint64);
+      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_SIZE, 0, glint64);
       fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_SIZE   [%2i]: %li\n",
-        i, *glint64);
+        0, *glint64);
     }
 
     fprintf (file, "  ...clipping...\n");
