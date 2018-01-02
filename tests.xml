@@ -3,7 +3,7 @@
 </version>
 
 <headers>
-  ./
+  ./src
 </headers>
 
 <libs>
@@ -11,5 +11,6 @@
 </libs>
 
 <gcc_options>
-  -lGL -lX11
+  -I/home/spearman/c/local/gl-utils/include/
+  -ldl
 </gcc_options>
