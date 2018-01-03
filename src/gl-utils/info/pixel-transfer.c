@@ -9,13 +9,23 @@ void gl_info_pixel_transfer_constant_print() {
 void gl_info_pixel_transfer_constant_write (FILE* file) {
   fprintf (file, "gl info pixel transfer constants...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint glint[4];
-    glGetIntegerv (GL_IMPLEMENTATION_COLOR_READ_FORMAT, glint);
-    fprintf (file, "GL_IMPLEMENTATION_COLOR_READ_FORMAT:  %s\n",
-      gl_show_pixel_data_format (*glint));
-    glGetIntegerv (GL_IMPLEMENTATION_COLOR_READ_TYPE, glint);
-    fprintf (file, "GL_IMPLEMENTATION_COLOR_READ_TYPE:    %s\n",
-      gl_show_pixel_data_type (*glint));
+    // gl 4.1
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 1 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_IMPLEMENTATION_COLOR_READ_FORMAT, glint);
+      fprintf (file, "GL_IMPLEMENTATION_COLOR_READ_FORMAT:  %s\n",
+        gl_show_pixel_data_format (*glint));
+      glGetIntegerv (GL_IMPLEMENTATION_COLOR_READ_TYPE, glint);
+      fprintf (file, "GL_IMPLEMENTATION_COLOR_READ_TYPE:    %s\n",
+        gl_show_pixel_data_type (*glint));
+    }
   }
   fprintf (file, "...gl info pixel transfer constants\n");
 }
@@ -29,6 +39,11 @@ void gl_info_pixel_transfer_state_print() {
 void gl_info_pixel_transfer_state_write (FILE* file) {
   fprintf (file, "gl info pixel transfer state...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint     glint [4];
     GLboolean glbool[4];
     glGetIntegerv (GL_PIXEL_PACK_BUFFER_BINDING, glint);
@@ -53,14 +68,21 @@ void gl_info_pixel_transfer_state_write (FILE* file) {
     glGetBooleanv (GL_PACK_LSB_FIRST, glbool);
     fprintf (file, "GL_PACK_LSB_FIRST:                  %s\n",
       gl_show_boolean (*glbool));
-    glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_SIZE, glint);
-    fprintf (file, "GL_PACK_COMPRESSED_BLOCK_SIZE:      %i\n", *glint);
-    glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_WIDTH, glint);
-    fprintf (file, "GL_PACK_COMPRESSED_BLOCK_WIDTH:     %i\n", *glint);
-    glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_HEIGHT, glint);
-    fprintf (file, "GL_PACK_COMPRESSED_BLOCK_HEIGHT:    %i\n", *glint);
-    glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_DEPTH, glint);
-    fprintf (file, "GL_PACK_COMPRESSED_BLOCK_DEPTH:     %i\n", *glint);
+
+    // gl 4.2
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 2 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_SIZE, glint);
+      fprintf (file, "GL_PACK_COMPRESSED_BLOCK_SIZE:      %i\n", *glint);
+      glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_WIDTH, glint);
+      fprintf (file, "GL_PACK_COMPRESSED_BLOCK_WIDTH:     %i\n", *glint);
+      glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_HEIGHT, glint);
+      fprintf (file, "GL_PACK_COMPRESSED_BLOCK_HEIGHT:    %i\n", *glint);
+      glGetIntegerv (GL_PACK_COMPRESSED_BLOCK_DEPTH, glint);
+      fprintf (file, "GL_PACK_COMPRESSED_BLOCK_DEPTH:     %i\n", *glint);
+    }
+
     glGetIntegerv (GL_UNPACK_ALIGNMENT, glint);
     fprintf (file, "GL_UNPACK_ALIGNMENT:                %i\n", *glint);
     glGetIntegerv (GL_UNPACK_IMAGE_HEIGHT, glint);
@@ -79,14 +101,21 @@ void gl_info_pixel_transfer_state_write (FILE* file) {
     glGetBooleanv (GL_UNPACK_LSB_FIRST, glbool);
     fprintf (file, "GL_UNPACK_LSB_FIRST:                %s\n",
       gl_show_boolean (*glbool));
-    glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_SIZE, glint);
-    fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_SIZE:    %i\n", *glint);
-    glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_WIDTH, glint);
-    fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_WIDTH:   %i\n", *glint);
-    glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_HEIGHT, glint);
-    fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_HEIGHT:  %i\n", *glint);
-    glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_DEPTH, glint);
-    fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_DEPTH:   %i\n", *glint);
+
+    // gl 4.2
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 2 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_SIZE, glint);
+      fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_SIZE:    %i\n", *glint);
+      glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_WIDTH, glint);
+      fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_WIDTH:   %i\n", *glint);
+      glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_HEIGHT, glint);
+      fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_HEIGHT:  %i\n", *glint);
+      glGetIntegerv (GL_UNPACK_COMPRESSED_BLOCK_DEPTH, glint);
+      fprintf (file, "GL_UNPACK_COMPRESSED_BLOCK_DEPTH:   %i\n", *glint);
+    }
+
     glGetIntegerv (GL_CLAMP_READ_COLOR, glint);
     fprintf (file, "GL_CLAMP_READ_COLOR:                %s\n",
       gl_show_clamp_read_color (*glint));

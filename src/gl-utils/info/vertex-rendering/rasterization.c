@@ -9,6 +9,11 @@ void gl_info_rasterization_constant_print() {
 void gl_info_rasterization_constant_write (FILE* file) {
   fprintf (file, "gl info rasterization constants...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint   glint[4];
     GLfloat glfloat[4];
 
@@ -34,8 +39,6 @@ void gl_info_rasterization_constant_write (FILE* file) {
       glfloat[0], glfloat[1]);
 
     fprintf (file, "  ...multisampling...\n");
-    glGetIntegerv (GL_MAX_FRAMEBUFFER_SAMPLES, glint);
-    fprintf (file, "GL_MAX_FRAMEBUFFER_SAMPLES:         %i\n", *glint);
     glGetIntegerv (GL_MAX_INTEGER_SAMPLES, glint);
     fprintf (file, "GL_MAX_INTEGER_SAMPLES:             %i\n", *glint);
     glGetIntegerv (GL_MAX_SAMPLES, glint);
@@ -46,20 +49,33 @@ void gl_info_rasterization_constant_write (FILE* file) {
     fprintf (file, "GL_MAX_DEPTH_TEXTURE_SAMPLES:       %i\n", *glint);
     glGetIntegerv (GL_MAX_SAMPLE_MASK_WORDS, glint);
     fprintf (file, "GL_MAX_SAMPLE_MASK_WORDS:           %i\n", *glint);
+    // gl 4.3
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 3 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_MAX_FRAMEBUFFER_SAMPLES, glint);
+      fprintf (file, "GL_MAX_FRAMEBUFFER_SAMPLES:         %i\n", *glint);
+    }
 
     fprintf (file, "  ...primitive parameter interpolation...\n");
     glGetIntegerv (GL_MAX_VARYING_FLOATS, glint);
     fprintf (file, "GL_MAX_VARYING_FLOATS:              %i\n", *glint);
     glGetIntegerv (GL_MAX_VARYING_COMPONENTS, glint);
     fprintf (file, "GL_MAX_VARYING_COMPONENTS:          %i\n", *glint);
-    glGetIntegerv (GL_MAX_VARYING_VECTORS, glint);
-    fprintf (file, "GL_MAX_VARYING_VECTORS:             %i\n", *glint);
-    glGetIntegerv (GL_VIEWPORT_INDEX_PROVOKING_VERTEX, glint);
-    fprintf (file, "GL_VIEWPORT_INDEX_PROVOKING_VERTEX: %s\n",
-      gl_show_provoke_convention (*glint));
-    glGetIntegerv (GL_LAYER_PROVOKING_VERTEX, glint);
-    fprintf (file, "GL_LAYER_PROVOKING_VERTEX:          %s\n",
-      gl_show_provoke_convention (*glint));
+
+    // gl 4.1
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 1 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_MAX_VARYING_VECTORS, glint);
+      fprintf (file, "GL_MAX_VARYING_VECTORS:             %i\n", *glint);
+      glGetIntegerv (GL_VIEWPORT_INDEX_PROVOKING_VERTEX, glint);
+      fprintf (file, "GL_VIEWPORT_INDEX_PROVOKING_VERTEX: %s\n",
+        gl_show_provoke_convention (*glint));
+      glGetIntegerv (GL_LAYER_PROVOKING_VERTEX, glint);
+      fprintf (file, "GL_LAYER_PROVOKING_VERTEX:          %s\n",
+        gl_show_provoke_convention (*glint));
+    }
   }
   fprintf (file, "...gl info rasterization constants\n");
 }

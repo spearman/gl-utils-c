@@ -79,13 +79,18 @@ void color_cycle_rgb (
 //  main                                                                     //
 ///////////////////////////////////////////////////////////////////////////////
 
+/// Note SDL2 requires on Windows that the `main` function signature has the
+/// arguments `argc` and `argv`, although they are not used here.
+///
 /// Environment variables that may be set:
 ///
 /// - `GL_UTILS_REQUEST_3_3_CORE` -- if set, SDL will set GL attributes
 /// indicating / that an OpenGL 3.3 core profile should be requested (even
 /// if the system supports newer OpenGL versions).
-int main() {
+int main (int argc, char* argv[]) {
   puts ("glutils main...");
+  // avoid "unused variable" warnings
+  assert (argc == argc); assert (argv == argv);
 
   //
   //  initialize

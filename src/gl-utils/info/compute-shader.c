@@ -13,6 +13,7 @@ void gl_info_compute_shader_constant_write (FILE* file) {
     GLint gl_major_version, gl_minor_version;
     glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
     glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+    // gl 4.3
     if (4 < gl_major_version
       || (4 == gl_major_version && 3 <= gl_major_version))
     {
@@ -70,6 +71,7 @@ void gl_info_compute_shader_state_write (FILE* file) {
     GLint gl_major_version, gl_minor_version;
     glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
     glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+    // gl 4.3
     if (4 < gl_major_version
       || (4 == gl_major_version && 3 <= gl_major_version))
     {

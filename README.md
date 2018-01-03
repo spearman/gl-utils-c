@@ -84,7 +84,7 @@ After OpenGL has been initialized, functions may be called:
 ```
 
 An example program has been included in `./src/main.c` which can be run with `$
-make run`.
+make run` (requires SDL2).
 
 The environment variable `GL_UTILS_FATAL_ERRORS` may be set to cause an
 assertion failure whenever an OpenGL error is encountered with

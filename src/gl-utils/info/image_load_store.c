@@ -13,11 +13,12 @@ void gl_info_image_loadstore_constant_write (FILE* file) {
     GLint gl_major_version, gl_minor_version;
     glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
     glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
+    // gl 4.2
     if (4 < gl_major_version
       || (4 == gl_major_version && 2 <= gl_minor_version))
     {
       GLint     glint [4];
-      //GLboolean glbool[4];
       glGetIntegerv (GL_MAX_IMAGE_UNITS, glint);
       fprintf (file, "GL_MAX_IMAGE_UNITS:             %i\n", *glint);
       glGetIntegerv (GL_MAX_COMBINED_IMAGE_UNIFORMS, glint);
@@ -43,6 +44,8 @@ void gl_info_image_loadstore_state_write (FILE* file) {
     GLint gl_major_version, gl_minor_version;
     glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
     glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
+    // gl 4.2
     if (4 < gl_major_version
       || (4 == gl_major_version && 2 <= gl_minor_version))
     {

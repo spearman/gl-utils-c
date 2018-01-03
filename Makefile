@@ -23,7 +23,7 @@ CC = gcc
 CPPFLAGS = -I./include/
 CFLAGS = -std=c11 -Wall -Wextra -Wfatal-errors #-Wpedantic
 LDFLAGS =
-LDLIBS = -lm -ldl -lGL -lSDL2 #-lGLEW -lX11
+LDLIBS = -lm -ldl -lGL #-lopengl32 #-lGLEW -lX11
 ARFLAGS = rc
 RELEASE_FLAGS = -O3 -DNDEBUG
 DEBUG_FLAGS = -g -ggdb -DDEBUG
@@ -106,11 +106,11 @@ cleanall: clean
 # objects
 build/release/$(EXE):\
   $(OBJECTS_RELEASE_EXE) build/release/lib$(LIB).a | build/release/
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) `sdl2-config --libs` -o $@
 
 build/debug/$(EXE):\
   $(OBJECTS_DEBUG_EXE) build/debug/lib$(LIB).a | build/debug/
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) `sdl2-config --libs` -o $@
 
 build/test/$(TEST): $(OBJECTS_TEST) | build/test/
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
@@ -179,7 +179,7 @@ obj/release/exe.d: $(HEADERS) $(SOURCES_EXE) | obj/release/
       echo "$$dir/$$(cpp -MM $$f)";\
       echo "	@mkdir -p $$dir";\
       echo "	$(CC) -c -O3 "\
-        '$$(CPPFLAGS) $$(CFLAGS) $$(RELEASE_FLAGS) $$< -o $$@');\
+        '$$(CPPFLAGS) $$(CFLAGS) `sdl2-config --cflags` $$(RELEASE_FLAGS) $$< -o $$@');\
   done > $@
 	@echo "<<< ...Generating $(EXE) release dependencies done"
 
@@ -212,7 +212,7 @@ obj/debug/exe.d: $(HEADERS) $(SOURCES_EXE) | obj/debug/
       echo "$$dir/$$(cpp -MM $$f)";\
       echo "	@mkdir -p $$dir";\
       echo "	$(CC) -c "\
-        '$$(CPPFLAGS) $$(CFLAGS) $$(DEBUG_FLAGS) $$< -o $$@');\
+        '$$(CPPFLAGS) $$(CFLAGS) `sdl2-config --cflags` $$(DEBUG_FLAGS) $$< -o $$@');\
   done > $@
 	@echo "<<< ...Generating $(EXE) debug dependencies done"
 

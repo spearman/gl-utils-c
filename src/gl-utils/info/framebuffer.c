@@ -9,6 +9,11 @@ void gl_info_framebuffer_constant_print() {
 void gl_info_framebuffer_constant_write (FILE* file) {
   fprintf (file, "gl info framebuffer constants...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint     glint [4];
     GLboolean glbool[4];
     glGetBooleanv (GL_DOUBLEBUFFER, glbool);
@@ -17,14 +22,19 @@ void gl_info_framebuffer_constant_write (FILE* file) {
     glGetBooleanv (GL_STEREO, glbool);
     fprintf (file, "GL_STEREO:                  %s\n",
       gl_show_boolean (*glbool));
-    glGetIntegerv (GL_MAX_FRAMEBUFFER_WIDTH, glint);
-    fprintf (file, "GL_MAX_FRAMEBUFFER_WIDTH:   %i\n", *glint);
-    glGetIntegerv (GL_MAX_FRAMEBUFFER_HEIGHT, glint);
-    fprintf (file, "GL_MAX_FRAMEBUFFER_HEIGHT:  %i\n", *glint);
-    glGetIntegerv (GL_MAX_FRAMEBUFFER_LAYERS, glint);
-    fprintf (file, "GL_MAX_FRAMEBUFFER_LAYERS:  %i\n", *glint);
     glGetIntegerv (GL_MAX_COLOR_ATTACHMENTS, glint);
     fprintf (file, "GL_MAX_COLOR_ATTACHMENTS:   %i\n", *glint);
+    // gl 4.3
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 3 <= gl_major_version))
+    {
+      glGetIntegerv (GL_MAX_FRAMEBUFFER_WIDTH, glint);
+      fprintf (file, "GL_MAX_FRAMEBUFFER_WIDTH:   %i\n", *glint);
+      glGetIntegerv (GL_MAX_FRAMEBUFFER_HEIGHT, glint);
+      fprintf (file, "GL_MAX_FRAMEBUFFER_HEIGHT:  %i\n", *glint);
+      glGetIntegerv (GL_MAX_FRAMEBUFFER_LAYERS, glint);
+      fprintf (file, "GL_MAX_FRAMEBUFFER_LAYERS:  %i\n", *glint);
+    }
   }
   fprintf (file, "...gl info framebuffer constants\n");
 }

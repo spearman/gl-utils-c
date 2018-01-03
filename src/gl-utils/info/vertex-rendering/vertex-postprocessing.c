@@ -9,12 +9,14 @@ void gl_info_vertex_postprocessing_constant_print() {
 void gl_info_vertex_postprocessing_constant_write (FILE* file) {
   fprintf (file, "gl info vertex postprocessing constants...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint glint[4];
 
     fprintf (file, "  ...transform feedback...\n");
-    glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, glint);
-    fprintf (file, "GL_MAX_TRANSFORM_FEEDBACK_BUFFERS:                %i\n",
-      *glint);
     glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS, glint);
     fprintf (file, "GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: %i\n",
       *glint);
@@ -24,6 +26,12 @@ void gl_info_vertex_postprocessing_constant_write (FILE* file) {
     glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS, glint);
     fprintf (file, "GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS:    %i\n",
       *glint);
+    // gl 4.0
+    if (4 <= gl_major_version) {
+      glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, glint);
+      fprintf (file, "GL_MAX_TRANSFORM_FEEDBACK_BUFFERS:                %i\n",
+        *glint);
+    }
 
     fprintf (file, "  ...clipping...\n");
     glGetIntegerv (GL_MAX_CLIP_DISTANCES, glint);
@@ -33,18 +41,23 @@ void gl_info_vertex_postprocessing_constant_write (FILE* file) {
     fprintf (file, "  ...perspective divide...\n");
 
     fprintf (file, "  ...viewport transform...\n");
-    glGetIntegerv (GL_MAX_VIEWPORTS, glint);
-    fprintf (file, "GL_MAX_VIEWPORTS:                                 %i\n",
-      *glint);
     glGetIntegerv (GL_MAX_VIEWPORT_DIMS, glint);
     fprintf (file, "GL_MAX_VIEWPORT_DIMS:                             %i %i\n",
       glint[0], glint[1]);
-    glGetIntegerv (GL_VIEWPORT_BOUNDS_RANGE, glint);
-    fprintf (file, "GL_VIEWPORT_BOUNDS_RANGE:                         %i %i\n",
-      glint[0], glint[1]);
-    glGetIntegerv (GL_VIEWPORT_SUBPIXEL_BITS, glint);
-    fprintf (file, "GL_VIEWPORT_SUBPIXEL_BITS:                        %i\n",
-      *glint);
+    // gl 4.1
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 1 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_MAX_VIEWPORTS, glint);
+      fprintf (file, "GL_MAX_VIEWPORTS:                                 %i\n",
+        *glint);
+      glGetIntegerv (GL_VIEWPORT_BOUNDS_RANGE, glint);
+      fprintf (file, "GL_VIEWPORT_BOUNDS_RANGE:                         %i %i\n",
+        glint[0], glint[1]);
+      glGetIntegerv (GL_VIEWPORT_SUBPIXEL_BITS, glint);
+      fprintf (file, "GL_VIEWPORT_SUBPIXEL_BITS:                        %i\n",
+        *glint);
+    }
   }
   fprintf (file, "...gl info vertex postprocessing constants\n");
 }
@@ -69,18 +82,19 @@ void gl_info_vertex_postprocessing_state_write (FILE* file) {
     GLfloat   glfloat[4];
 
     fprintf (file, "  ...transform feedback...\n");
-    glGetIntegerv (GL_TRANSFORM_FEEDBACK_BINDING, glint);
-    fprintf (file, "GL_TRANSFORM_FEEDBACK_BINDING:            %i\n",
-      *glint);
-    glGetBooleanv (GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE, glbool);
-    fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE:      %s\n",
-      gl_show_boolean (*glbool));
-    glGetBooleanv (GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED, glbool);
-    fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED:      %s\n",
-      gl_show_boolean (*glbool));
 
     // gl 4.0
     if (4 <= gl_major_version) {
+      glGetIntegerv (GL_TRANSFORM_FEEDBACK_BINDING, glint);
+      fprintf (file, "GL_TRANSFORM_FEEDBACK_BINDING:            %i\n",
+        *glint);
+      glGetBooleanv (GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE, glbool);
+      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_ACTIVE:      %s\n",
+        gl_show_boolean (*glbool));
+      glGetBooleanv (GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED, glbool);
+      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_PAUSED:      %s\n",
+      gl_show_boolean (*glbool));
+
       GLint max_transform_feedback_buffer_bindings;
       glGetIntegerv (GL_MAX_TRANSFORM_FEEDBACK_BUFFERS,
         &max_transform_feedback_buffer_bindings);
@@ -96,15 +110,12 @@ void gl_info_vertex_postprocessing_state_write (FILE* file) {
           i, *glint64);
       }
     } else {
-      glGetIntegeri_v (GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, 0, glint);
-      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_BINDING[%2i]: %i\n",
-        0, *glint);
-      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_START, 0, glint64);
-      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_START  [%2i]: %li\n",
-        0, *glint64);
-      glGetInteger64i_v (GL_TRANSFORM_FEEDBACK_BUFFER_SIZE, 0, glint64);
-      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_SIZE   [%2i]: %li\n",
-        0, *glint64);
+      // FIXME: should this be allowed for OpenGL 3.3 ? the symbols above for
+      // _START and _END are defined, but will result in invalid enum if queried
+      glGetIntegerv (GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, glint);
+      fprintf (file, "GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:     %i\n",
+        *glint);
+      gl_check_error();
     }
 
     fprintf (file, "  ...clipping...\n");

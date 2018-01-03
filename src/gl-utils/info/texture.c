@@ -9,6 +9,11 @@ void gl_info_texture_constant_print() {
 void gl_info_texture_constant_write (FILE* file) {
   fprintf (file, "gl info texture constants...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint     glint [4];
     //GLboolean glbool[4];
     glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, glint);
@@ -29,14 +34,24 @@ void gl_info_texture_constant_write (FILE* file) {
     fprintf (file, "GL_MAX_ARRAY_TEXTURE_LAYERS:          %i\n", *glint);
     glGetIntegerv (GL_MAX_TEXTURE_LOD_BIAS, glint);
     fprintf (file, "GL_MAX_TEXTURE_LOD_BIAS:              %i\n", *glint);
-    glGetIntegerv (GL_MAX_IMAGE_SAMPLES, glint);
-    fprintf (file, "GL_MAX_IMAGE_SAMPLES:                 %i\n", *glint);
     glGetIntegerv (GL_MIN_PROGRAM_TEXEL_OFFSET, glint);
     fprintf (file, "GL_MIN_PROGRAM_TEXEL_OFFSET:          %i\n", *glint);
     glGetIntegerv (GL_MAX_PROGRAM_TEXEL_OFFSET, glint);
     fprintf (file, "GL_MAX_PROGRAM_TEXEL_OFFSET:          %i\n", *glint);
-    glGetIntegerv (GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT, glint);
-    fprintf (file, "GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT:   %i\n", *glint);
+    // gl 4.2
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 2 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_MAX_IMAGE_SAMPLES, glint);
+      fprintf (file, "GL_MAX_IMAGE_SAMPLES:                 %i\n", *glint);
+    }
+    // gl 4.3
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 3 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT, glint);
+      fprintf (file, "GL_TEXTURE_BUFFER_OFFSET_ALIGNMENT:   %i\n", *glint);
+    }
   }
   fprintf (file, "...gl info texture constants\n");
 }
@@ -50,6 +65,11 @@ void gl_info_texture_state_print() {
 void gl_info_texture_state_write (FILE* file) {
   fprintf (file, "gl info texture state...\n");
   if (gl_check_context()) {
+    // version information
+    GLint gl_major_version, gl_minor_version;
+    glGetIntegerv (GL_MAJOR_VERSION, &gl_major_version);
+    glGetIntegerv (GL_MINOR_VERSION, &gl_minor_version);
+
     GLint     glint [4];
     GLboolean glbool[4];
     glGetIntegerv (GL_ACTIVE_TEXTURE, glint);
@@ -57,8 +77,13 @@ void gl_info_texture_state_write (FILE* file) {
       gl_show_texture_unit (*glint));
     glGetIntegerv (GL_SAMPLER_BINDING, glint);
     fprintf (file, "GL_SAMPLER_BINDING:                       %i\n", *glint);
-    glGetIntegerv (GL_TEXTURE_BUFFER_BINDING, glint);
-    fprintf (file, "GL_TEXTURE_BUFFER_BINDING:                %i\n", *glint);
+    // gl 4.4
+    if (4 < gl_major_version
+      || (4 == gl_major_version && 4 <= gl_minor_version))
+    {
+      glGetIntegerv (GL_TEXTURE_BUFFER_BINDING, glint);
+      fprintf (file, "GL_TEXTURE_BUFFER_BINDING:                %i\n", *glint);
+    }
     glGetIntegerv (GL_TEXTURE_BINDING_BUFFER, glint);
     fprintf (file, "GL_TEXTURE_BINDING_BUFFER:                %i\n", *glint);
     glGetIntegerv (GL_TEXTURE_BINDING_RECTANGLE, glint);
@@ -79,8 +104,11 @@ void gl_info_texture_state_write (FILE* file) {
     fprintf (file, "GL_TEXTURE_BINDING_2D_ARRAY:              %i\n", *glint);
     glGetIntegerv (GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY, glint);
     fprintf (file, "GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY:  %i\n", *glint);
-    glGetIntegerv (GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, glint);
-    fprintf (file, "GL_TEXTURE_BINDING_CUBE_MAP_ARRAY:        %i\n", *glint);
+    // gl 4.0
+    if (4 <= gl_major_version) {
+      glGetIntegerv (GL_TEXTURE_BINDING_CUBE_MAP_ARRAY, glint);
+      fprintf (file, "GL_TEXTURE_BINDING_CUBE_MAP_ARRAY:        %i\n", *glint);
+    }
     glGetBooleanv (GL_TEXTURE_CUBE_MAP_SEAMLESS, glbool);
     fprintf (file, "GL_TEXTURE_CUBE_MAP_SEAMLESS:             %s\n",
       gl_show_boolean (*glbool));
