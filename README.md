@@ -25,29 +25,29 @@ the code being tested, while omitting those tests from regular builds
 `afl-fuzz`, the program must be built with instrumentation by `afl-clang`
 instead of the usual compiler
 
-| `make [all]` -- check and build the release executable
-| `make build` -- build the debug executable
-| `make debug` -- build the debug executable and open with `gdb`
-| `make release` -- build the release executable
-| `make run` -- build and run the debug executable
-| `make run-release` -- build and run the release executable
-| `make lib` -- build the debug static library
-| `make lib-release` -- build the release static library
-| `make shared` -- build the debug shared library
-| `make shared-release` -- build the release shared library
-| `make doc` -- build documentation
-| `make doc-open` -- build documentation and open with `gnome-open`
-| `make check` -- perform static analysis (cppcheck + frama-c)
+- `make [all]` -- check and build the release executable
+- `make build` -- build the debug executable
+- `make debug` -- build the debug executable and open with `gdb`
+- `make release` -- build the release executable
+- `make run` -- build and run the debug executable
+- `make run-release` -- build and run the release executable
+- `make lib` -- build the debug static library
+- `make lib-release` -- build the release static library
+- `make shared` -- build the debug shared library
+- `make shared-release` -- build the release shared library
+- `make doc` -- build documentation
+- `make doc-open` -- build documentation and open with `gnome-open`
+- `make check` -- perform static analysis (cppcheck + frama-c)
     *partially implemented*
-| `make test` -- generate, build and execute smoke tests (api sanity
+- `make test` -- generate, build and execute smoke tests (api sanity
     checker) and then run unit, property, and integration tests
     (theft, glib testing) with `valgrind --leak-check=full`
-| `make fuzz` -- build fuzz executable with `afl-clang` and run fuzz
+- `make fuzz` -- build fuzz executable with `afl-clang` and run fuzz
     tests with `afl-fuzz`
-| `make profile` -- generate Kcachegrind profiling information by
+- `make profile` -- generate Kcachegrind profiling information by
     running release executable with `valgrind --tool=callgrind`
-| `make bench` -- *not implemented*
-| `make dist` -- create some sort of distributable archive *not
+- `make bench` -- *not implemented*
+- `make dist` -- create some sort of distributable archive *not
     implemented*
 
 
