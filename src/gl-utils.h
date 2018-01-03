@@ -8,7 +8,6 @@ The following environment variables can be set:
 
 - `GL_UTILS_FATAL_ERRORS` -- if set, raise an assertion when an error is
   encountered by `gl_check_error()`.
-- `GL_UTILS_REQUEST_3_3_CORE` -- request an OpenGL 3.3 core profile
 
 @section gl_overview OpenGL overview
 

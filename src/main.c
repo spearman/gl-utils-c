@@ -1,3 +1,6 @@
+/// To request an OpenGL 3.3 core profile, the environment variable
+/// `GL_UTILS_REQUEST_3_3_CORE` may be set.
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

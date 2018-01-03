@@ -105,11 +105,11 @@ cleanall: clean
 
 # objects
 build/release/$(EXE):\
-  $(OBJECTS_RELEASE_EXE) $(OBJECTS_RELEASE_STATIC) | build/release/
+  $(OBJECTS_RELEASE_EXE) build/release/lib$(LIB).a | build/release/
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 build/debug/$(EXE):\
-  $(OBJECTS_DEBUG_EXE) $(OBJECTS_DEBUG_STATIC) | build/debug/
+  $(OBJECTS_DEBUG_EXE) build/debug/lib$(LIB).a | build/debug/
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 build/test/$(TEST): $(OBJECTS_TEST) | build/test/
@@ -118,22 +118,18 @@ build/test/$(TEST): $(OBJECTS_TEST) | build/test/
 build/fuzz/$(FUZZ): $(OBJECTS_FUZZ) | build/fuzz/
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-build/debug/lib$(LIB).a:\
-  $(OBJECTS_DEBUG_STATIC) | build/debug/
+build/debug/lib$(LIB).a: $(OBJECTS_DEBUG_STATIC) | build/debug/
 	ar $(ARFLAGS) $@ $^
 	ranlib $@
 
-build/release/lib$(LIB).a:\
-  $(OBJECTS_RELEASE_STATIC) | build/release/
+build/release/lib$(LIB).a: $(OBJECTS_RELEASE_STATIC) | build/release/
 	ar $(ARFLAGS) $@ $^
 	ranlib $@
 
-build/debug/lib$(LIB).so:\
-  $(OBJECTS_DEBUG_SHARED) | build/debug/
+build/debug/lib$(LIB).so: $(OBJECTS_DEBUG_SHARED) | build/debug/
 	$(CC) -shared $^ -o $@
 
-build/release/lib$(LIB).so:\
-  $(OBJECTS_RELEASE_SHARED) | build/release/
+build/release/lib$(LIB).so: $(OBJECTS_RELEASE_SHARED) | build/release/
 	$(CC) -shared $^ -o $@
 
 # dependencies
