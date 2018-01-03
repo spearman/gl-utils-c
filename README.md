@@ -26,11 +26,12 @@ the code being tested, while omitting those tests from regular builds
 instead of the usual compiler
 
 - `make [all]` -- check and build the release executable
-- `make build` -- build the debug executable
-- `make debug` -- build the debug executable and open with `gdb`
-- `make release` -- build the release executable
-- `make run` -- build and run the debug executable
-- `make run-release` -- build and run the release executable
+- `make build` -- build the debug library and executable
+- `make debug` -- build the debug library and executable and open with `gdb`
+- `make release` -- build the release library and executable
+- `make run` -- build the debug library and build and run the debug executable
+- `make run-release` -- build the release library and build and run the release
+  executable
 - `make lib` -- build the debug static library
 - `make lib-release` -- build the release static library
 - `make shared` -- build the debug shared library
