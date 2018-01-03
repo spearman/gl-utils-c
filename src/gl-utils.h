@@ -133,6 +133,7 @@ Some parts of the pipeline are involved in other *rendering commands*:
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include <glad/glad.h>
@@ -260,6 +261,7 @@ const char* gl_show_winding             (const GLenum winding);
 
 bool gl_check_context();
 void gl_check_error();
+bool gl_extension_is_supported (const char* const extension);
 
 #ifdef TEST
 void test_myfun ();

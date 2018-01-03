@@ -70,6 +70,16 @@ void gl_info_context_constant_write (FILE* file) {
     glGetInteger64v (GL_TIMESTAMP, glint64);
     fprintf (file, "GL_TIMESTAMP:                       %li\n", *glint64);
     gl_check_error();
+
+    // extension GL_NVX_gpu_memory_info
+    if (gl_extension_is_supported ("GL_NVX_gpu_memory_info")) {
+      glGetIntegerv (GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, glint);
+      fprintf (file, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX:       %iKB\n",
+        *glint);
+      glGetIntegerv (GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, glint);
+      fprintf (file, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX: %iKB\n",
+        *glint);
+    }
   }
   fprintf (file, "...gl info context constants\n");
 }
@@ -89,6 +99,60 @@ void gl_info_context_state_write (FILE* file) {
     fprintf (file, "GL_COPY_READ_BUFFER:    %i\n", *glint);
     glGetIntegerv (GL_COPY_WRITE_BUFFER, glint);
     fprintf (file, "GL_COPY_WRITE_BUFFER:   %i\n", *glint);
+    // extension GL_NVX_gpu_memory_info
+    if (gl_extension_is_supported ("GL_NVX_gpu_memory_info")) {
+      glGetIntegerv (GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, glint);
+      fprintf (file, "GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX: %iKB\n",
+        *glint);
+      glGetIntegerv (GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX, glint);
+      fprintf (file, "GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX:           %i\n",
+        *glint);
+      glGetIntegerv (GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, glint);
+      fprintf (file, "GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX:           %iKB\n",
+        *glint);
+    }
+    // extension GL_ATI_meminfo
+    if (gl_extension_is_supported ("GL_ATI_meminfo")) {
+      glGetIntegerv (GL_VBO_FREE_MEMORY_ATI, glint);
+      fprintf (file,
+        "GL_VBO_FREE_MEMORY_ATI (total free):                                 %iKB\n",
+        glint[0]);
+      fprintf (file,
+        "GL_VBO_FREE_MEMORY_ATI (largest available block):                    %iKB\n",
+        glint[1]);
+      fprintf (file,
+        "GL_VBO_FREE_MEMORY_ATI (total auxiliary):                            %iKB\n",
+        glint[2]);
+      fprintf (file,
+        "GL_VBO_FREE_MEMORY_ATI (largest available auxiliary block):          %iKB\n",
+        glint[3]);
+      glGetIntegerv (GL_TEXTURE_FREE_MEMORY_ATI, glint);
+      fprintf (file,
+        "GL_TEXTURE_FREE_MEMORY_ATI (total free):                             %iKB\n",
+        glint[0]);
+      fprintf (file,
+        "GL_TEXTURE_FREE_MEMORY_ATI (largest available block):                %iKB\n",
+        glint[1]);
+      fprintf (file,
+        "GL_TEXTURE_FREE_MEMORY_ATI (total auxiliary):                        %iKB\n",
+        glint[2]);
+      fprintf (file,
+        "GL_TEXTURE_FREE_MEMORY_ATI (largest available auxiliary block):      %iKB\n",
+        glint[3]);
+      glGetIntegerv (GL_RENDERBUFFER_FREE_MEMORY_ATI, glint);
+      fprintf (file,
+        "GL_RENDERBUFFER_FREE_MEMORY_ATI (total free):                        %iKB\n",
+        glint[0]);
+      fprintf (file,
+        "GL_RENDERBUFFER_FREE_MEMORY_ATI (largest available block):           %iKB\n",
+        glint[1]);
+      fprintf (file,
+        "GL_RENDERBUFFER_FREE_MEMORY_ATI (total auxiliary):                   %iKB\n",
+        glint[2]);
+      fprintf (file,
+        "GL_RENDERBUFFER_FREE_MEMORY_ATI (largest available auxiliary block): %iKB\n",
+        glint[3]);
+    }
   }
   fprintf (file, "...gl info context state\n");
 }

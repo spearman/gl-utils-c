@@ -68,7 +68,7 @@ check: $(HEADERS) $(SOURCES)
 	cppcheck src/ --enable=all --suppress=missingIncludeSystem
 	@echo ">>> Run frama-c..."
 	frama-c -no-frama-c-stdlib -wp -wp-no-rte -wp-prover alt-ergo\
-    -cpp-extra-args="-DTEST" `find src/ -name *[^glad][^test][^main].c`
+    -cpp-extra-args="-DTEST -I./include/" `find src/ -name *[^glad][^test][^main].c`
 	@echo "<<< ...Checking done"
 test: test_results/ build/test/$(TEST)
 	@echo ">>> Run unit and property tests in valgrind..."

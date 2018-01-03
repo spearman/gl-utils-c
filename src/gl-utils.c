@@ -35,6 +35,25 @@ void gl_check_error() {
   }
 }
 
+//
+//  gl_info_context_extensions
+//
+bool gl_extension_is_supported (const char* extension) {
+  bool found = false;
+  if (gl_check_context()) {
+    GLint n;
+    glGetIntegerv (GL_NUM_EXTENSIONS, &n);
+    for (GLint i = 0; i < n; ++i) {
+      const GLubyte* glext = glGetStringi (GL_EXTENSIONS, i);
+      if (0 == strcmp (extension, (const char*) glext)) {
+        found = true;
+        break;
+      }
+    }
+  }
+  return found;
+}
+
 /// This is just an example function that shows usage of a Frama-C ACSL
 /// function contract:
 ///

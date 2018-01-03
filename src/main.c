@@ -199,6 +199,7 @@ int main() {
     exit (1);
   }
   gl_check_error();
+  puts ("...glad OpenGL loaded...");
 
   puts ("...initialize");
   // end initialize
