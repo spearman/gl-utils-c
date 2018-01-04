@@ -87,10 +87,12 @@ void color_cycle_rgb (
 /// - `GL_UTILS_REQUEST_3_3_CORE` -- if set, SDL will set GL attributes
 /// indicating / that an OpenGL 3.3 core profile should be requested (even
 /// if the system supports newer OpenGL versions).
+
 int main (int argc, char* argv[]) {
-  puts ("glutils main...");
   // avoid "unused variable" warnings
   assert (argc == argc); assert (argv == argv);
+
+  puts ("glutils main...");
 
   //
   //  initialize
@@ -157,6 +159,8 @@ int main (int argc, char* argv[]) {
 
   if (SDL_GL_SetAttribute (
     // core context profile makes deprecated functions unavailable
+    // this only seems to take effect if a specific GL version is requested
+    // above
     SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0)
   {
     sdl_check_error();
@@ -173,7 +177,7 @@ int main (int argc, char* argv[]) {
   SDL_Window* window = SDL_CreateWindow (
     "my sdl window",
     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, // x,y pos
-    800, 600,                                       // width,height
+    320, 240,                                       // width,height
     SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   if (window == NULL) {
     puts ("error: sdl create window failed");

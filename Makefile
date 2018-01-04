@@ -22,12 +22,15 @@ OBJECTS_FUZZ = $(SOURCES_FUZZ:src/%.c=obj/fuzz/%.o)
 CC = gcc
 CPPFLAGS = -I./include/
 CFLAGS = -std=c11 -Wall -Wextra -Wfatal-errors #-Wpedantic
+# note: these linker flags and libraries are only used when linking the example
+# and test executables
 LDFLAGS =
-LDLIBS = -lm -ldl -lGL #-lopengl32 #-lGLEW -lX11
+LDLIBS = -ldl -lGL         # Linux
+#LDLIBS = -ldl -lopengl32   # Windows
 ARFLAGS = rc
 RELEASE_FLAGS = -O3 -DNDEBUG
 DEBUG_FLAGS = -g -ggdb -DDEBUG
-TEST_FLAGS = $(DEBUG_FLAGS) -DTEST `pkg-config --cflags glib-2.0`
+TEST_FLAGS = $(DEBUG_FLAGS) -DTEST $$(pkg-config --cflags glib-2.0)
 
 # debug print rule
 print-%: ; @echo $*=$($*)
@@ -68,7 +71,8 @@ check: $(HEADERS) $(SOURCES)
 	cppcheck src/ --enable=all --suppress=missingIncludeSystem
 	@echo ">>> Run frama-c..."
 	frama-c -no-frama-c-stdlib -wp -wp-no-rte -wp-prover alt-ergo\
-    -cpp-extra-args="-DTEST -I./include/" `find src/ -name *[^glad][^test][^main].c`
+    -cpp-extra-args="-DTEST -I./include/"\
+    $$(find src/ -name *[^glad][^test][^main].c)
 	@echo "<<< ...Checking done"
 test: test_results/ build/test/$(TEST)
 	@echo ">>> Run unit and property tests in valgrind..."
@@ -105,12 +109,12 @@ cleanall: clean
 
 # objects
 build/release/$(EXE):\
-  $(OBJECTS_RELEASE_EXE) build/release/lib$(LIB).a | build/release/
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) `sdl2-config --libs` -o $@
+  $(OBJECTS_RELEASE_EXE) build/release/$(STATIC_LIB) | build/release/
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -lm $$(sdl2-config --libs) -o $@
 
 build/debug/$(EXE):\
-  $(OBJECTS_DEBUG_EXE) build/debug/lib$(LIB).a | build/debug/
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) `sdl2-config --libs` -o $@
+  $(OBJECTS_DEBUG_EXE) build/debug/$(STATIC_LIB) | build/debug/
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -lm $$(sdl2-config --libs) -o $@
 
 build/test/$(TEST): $(OBJECTS_TEST) | build/test/
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
@@ -179,7 +183,7 @@ obj/release/exe.d: $(HEADERS) $(SOURCES_EXE) | obj/release/
       echo "$$dir/$$(cpp -MM $$f)";\
       echo "	@mkdir -p $$dir";\
       echo "	$(CC) -c -O3 "\
-        '$$(CPPFLAGS) $$(CFLAGS) `sdl2-config --cflags` $$(RELEASE_FLAGS) $$< -o $$@');\
+        '$$(CPPFLAGS) $$(CFLAGS) $$$$(sdl2-config --cflags) $$(RELEASE_FLAGS) $$< -o $$@');\
   done > $@
 	@echo "<<< ...Generating $(EXE) release dependencies done"
 
@@ -212,7 +216,7 @@ obj/debug/exe.d: $(HEADERS) $(SOURCES_EXE) | obj/debug/
       echo "$$dir/$$(cpp -MM $$f)";\
       echo "	@mkdir -p $$dir";\
       echo "	$(CC) -c "\
-        '$$(CPPFLAGS) $$(CFLAGS) `sdl2-config --cflags` $$(DEBUG_FLAGS) $$< -o $$@');\
+        '$$(CPPFLAGS) $$(CFLAGS) $$$$(sdl2-config --cflags) $$(DEBUG_FLAGS) $$< -o $$@');\
   done > $@
 	@echo "<<< ...Generating $(EXE) debug dependencies done"
 

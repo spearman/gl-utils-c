@@ -5,6 +5,24 @@
 
 ## Building
 
+To build the release static library and example executable use the `make [all]`
+target:
+
+    $ make
+
+To build and run the debug example executable, linked with the debug static
+library, use the make target:
+
+    $ make run
+
+This will dump information for a selection of OpenGL constants and state to a
+file `dump` in the current directory.
+
+For other targets see the Makefile details below.
+
+
+### Makefile
+
 To allow building object files with different flags for different targets, they
 will be put in obj/*target* directories, where target is:
 
@@ -73,6 +91,17 @@ Include the main header file:
 ```c
 #include "gl-utils.h"
 ```
+
+This will include to `<glad/glad.h>`, which are headers generated for OpenGL
+4.5 core using the webservice <http://glad.dav1d.de/>.
+
+To link an application, the library flags should be provided to the linker:
+
+    -ldl -lGL
+
+`-ldl` is a requirement of the OpenGL function loader in `src/glad.c`.
+
+On Windows systems, replace `-lGL` with `-lopengl32`.
 
 After OpenGL has been initialized, functions may be called:
 
